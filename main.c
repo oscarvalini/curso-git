@@ -10,7 +10,8 @@ typedef struct node Node;
 
 int tamanho;
 
-void deleta(void);
+void deleta(Node**, char*);
+void deletaAt(Node**, int);
 void adiciona(Node**, int, char*);
 void adiciona_fim(Node**, char*);
 void list(Node**);
@@ -53,10 +54,10 @@ main(void) {
 			adiciona(&lista, pos, nome);
 		}
 		else if (strcmp(func, "del") == 0) {
-			deleta();
+			deleta(&lista, nome);
 		}
 		else if (strcmp(func, "delAt") == 0) {
-			deleta();
+			deletaAt(&lista, pos);
 		}
 		else if (strcmp(func, "lista") == 0) {
 			list(&lista);
@@ -72,7 +73,7 @@ main(void) {
 
 }
 
-void adiciona(Node **lista, int pos, char nome[30]) {
+void adiciona(Node **lista, int pos, char *nome) {
 	
 	Node *novo = (Node*) malloc(sizeof(Node));
 	Node *atual = *lista;
@@ -132,9 +133,56 @@ void adiciona_fim(Node **lista, char *nome) {
 	return;
 }
 
-void deleta() {
-	puts("Funcao remove invocada");
+void deleta(Node **lista, char *nome) {
+	
+	if(*lista == NULL) {
+		puts("Lista Vazia");
+		return;
+	}
+
+	Node *atual = *lista;
+	Node *ant = NULL;
+
+	while(strcmp(atual->nome, nome) != 0 && atual->prox != NULL) {
+		ant = atual;
+		atual = atual->prox;
+	}
+	
+	if(atual == *lista) {
+		*lista = atual->prox;
+		return;
+	}
+	if(strcmp(atual->nome, nome) == 0) {
+		ant->prox = atual->prox;
+		free(atual);
+	}
+	else{
+		printf("%s nao existe\n", nome);
+	}
 	return;
+}
+
+void deletaAt(Node **lista, int pos) {
+
+	if(*lista == NULL) {
+		puts("Lista Vazia");
+		return;
+	}
+
+	Node *atual = *lista;
+	Node *ant = NULL;
+
+	int i;
+	for(i = 1; i < pos && atual->prox != NULL; ++i) {
+		ant = atual;
+		atual = atual->prox;
+	}
+	if(i == pos) {
+		ant->prox = atual->prox;
+	}
+	else{
+		puts("posicao invalida!");
+	}
 }
 
 void list(Node **lista) {
